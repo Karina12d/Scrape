@@ -1,13 +1,13 @@
 import json, random, re, time
 from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
 
-# ====== CONFIGURA ESTO ======
-USERNAME = "nombre_usuario"   
+
+USERNAME = "nombre_usuario"   #cambia el nombre de usuario
 MAX_POSTS = 50
 COOKIES_JSON = r'''
 #Tus cookies aquí
 '''
-# ============================
+
 
 SAMESITE = {"no_restriction": "None", "lax": "Lax", "strict": "Strict", "unspecified": "Lax"}
 FIN_BIO = {"seguir", "siguiendo", "seguir también", "mensaje", "follow", "following", "message"}
@@ -57,11 +57,11 @@ def obtener_perfil(page):
         elif tipo in ("seguidos", "following"):
             perfil["seguidos"] = m.group(1)
 
-    # Nombre: la línea después del usuario, si no es un contador
+
     if len(lineas) > 1 and not patron.match(lineas[1]):
         perfil["nombre"] = lineas[1]
 
-    # Biografía: líneas después del último contador, hasta el botón "Seguir" o el usuario repetido
+
     bio = []
     for linea in lineas[ultimo_contador + 1:]:
         if linea.lower() in FIN_BIO or linea.lower() == USERNAME.lower():
@@ -72,7 +72,7 @@ def obtener_perfil(page):
 
 
 def recolectar_enlaces(page):
-    enlaces = {}   # clave: código de la publicación, evita duplicados
+    enlaces = {}   
     sin_nuevos = 0
     while len(enlaces) < MAX_POSTS and sin_nuevos < 10:
         hrefs = page.eval_on_selector_all(
@@ -86,9 +86,9 @@ def recolectar_enlaces(page):
 
         sin_nuevos = sin_nuevos + 1 if len(enlaces) == antes else 0
         if sin_nuevos >= 3:
-            page.mouse.wheel(0, -600)   # sube un poco para forzar que cargue más
+            page.mouse.wheel(0, -600)  
             pausa(1, 2)
-        page.mouse.wheel(0, random.randint(900, 1400))   # scroll más corto, no salta filas
+        page.mouse.wheel(0, random.randint(900, 1400))  
         pausa(1.5, 3)
     return list(enlaces.values())[:MAX_POSTS]
 
