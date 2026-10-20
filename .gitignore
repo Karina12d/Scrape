@@ -1,0 +1,12 @@
+# Cookies y credenciales
+cookies.json
+.env
+
+# Resultados de scraping
+alondra_cgp_instagram.json
+
+# Entornos virtuales y caché de Python
+venv/
+__pycache__/
+*.pyc
+.vscode/
