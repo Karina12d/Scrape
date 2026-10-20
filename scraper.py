@@ -105,7 +105,6 @@ def obtener_datos_publicacion(page, url):
         page.goto(url, wait_until="domcontentloaded", timeout=15000)
         pausa(2, 4)
 
-        # 1. Obtener la metaetiqueta og:description
         contenido_meta = ""
         try:
             meta_desc = page.locator('meta[property="og:description"]')
@@ -115,17 +114,17 @@ def obtener_datos_publicacion(page, url):
             pass
 
         if contenido_meta:
-            # Extraer Likes
+            # Likes
             m_likes = re.search(r"([\d.,]+\s*(?:mil|M|K)?)\s*(?:likes|Me gusta)", contenido_meta, re.I)
             if m_likes:
                 datos["likes"] = m_likes.group(1).strip()
 
-            # Extraer Comentarios
+            # Comentarios
             m_comments = re.search(r"([\d.,]+\s*(?:mil|M|K)?)\s*(?:comments|comentarios)", contenido_meta, re.I)
             if m_comments:
                 datos["comentarios"] = m_comments.group(1).strip()
 
-            # Extraer el texto real (caption)
+            # Texto 
             m_texto = re.search(r':\s*["“](.*)["”]$', contenido_meta, re.S)
             if m_texto:
                 datos["texto"] = m_texto.group(1).strip()
@@ -134,7 +133,6 @@ def obtener_datos_publicacion(page, url):
                 if len(partes) > 1:
                     datos["texto"] = partes[-1].strip()
 
-        # 2. Respaldo para el texto si no se pudo extraer del meta
         if not datos["texto"]:
             try:
                 h1_elem = page.locator("article h1").first
@@ -143,7 +141,7 @@ def obtener_datos_publicacion(page, url):
             except Exception:
                 pass
 
-        # 3. Extraer Fecha exacta (etiqueta <time>)
+        # Fecha
         try:
             time_elem = page.locator("article time, time").first
             if time_elem.count() > 0:
